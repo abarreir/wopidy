@@ -1,0 +1,38 @@
+{
+  "name": "wopidy",
+  "version": "0.1.0",
+  "description": "Yet another mopidy web client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.6.0",
+    "gulp-jshint": "^1.5.3",
+    "gulp-uglify": "^0.2.1",
+    "gulp-notify": "^1.2.5",
+    "gulp-concat": "^2.2.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-react": "^0.3.1",
+    "vinyl-source-stream": "^0.1.1",
+    "browserify": "^3.43.0",
+    "debowerify": "^0.7.0",
+    "envify": "^1.2.1",
+    "react": "^0.10.0",
+    "gulp-streamify": "0.0.5"
+  },
+  "browserify": {
+    "transform": [
+      "debowerify"
+    ]
+  },
+  "dependencies": {
+    "react": "^0.10.0",
+    "react-async": "^0.9.1",
+    "react-router-component": "^0.18.2",
+    "when": "^3.1.0",
+    "underscore": "^1.6.0"
+  }
+}
