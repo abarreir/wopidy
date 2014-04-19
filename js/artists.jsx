@@ -3,12 +3,17 @@
 
 var _ = require('underscore');
 var React = require('react');
+var ReactRouter = require('react-router-component');
+var Locations = ReactRouter.Locations;
+var Location = ReactRouter.Location;
+var Link = ReactRouter.Link;
 
-module.exports = React.createClass({
+var Albums = require('./albums');
 
+var ArtistsList = React.createClass({
     render: function() {
         var artists = _.map(this.props.artists, function(artist) {
-            return <li>{artist}</li>;
+            return <li><Link href={"/" + artist + "/"}>{artist}</Link></li>;
         });
 
         return (
@@ -18,6 +23,18 @@ module.exports = React.createClass({
                     {artists}
                 </ul>
             </div>
+        );
+    }
+});
+
+module.exports = React.createClass({
+
+    render: function() {
+        return (
+            <Locations contextual>
+              <Location path="/" artists={this.props.artists} handler={ArtistsList} />
+              <Location path="/:artist/*" albums={"Todo: Retrive artist's albums".split(' ')} handler={Albums} />
+            </Locations>
         );
     }
 });

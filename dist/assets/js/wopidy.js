@@ -4,17 +4,21 @@
 
 var _ = require('underscore');
 var React = require('react');
+var ReactRouter = require('react-router-component');
+var Locations = ReactRouter.Locations;
+var Location = ReactRouter.Location;
+var Link = ReactRouter.Link;
 
-module.exports = React.createClass({displayName: 'exports',
-    
+var AlbumsList = React.createClass({displayName: 'AlbumsList',
+
     render: function() {
         var albums = _.map(this.props.albums, function(album) {
-            return React.DOM.li(null, album);
+            return React.DOM.li(null, Link( {href:"/" + album}, album));
         });
 
         return (
             React.DOM.div(null, 
-                React.DOM.h2(null, "Albums"),
+                React.DOM.h2(null, "Albums" + (this.props.artist && " from " + this.props.artist || "")),
                 React.DOM.ul(null, 
                     albums
                 )
@@ -22,18 +26,53 @@ module.exports = React.createClass({displayName: 'exports',
         );
     }
 });
-},{"react":163,"underscore":164}],2:[function(require,module,exports){
+
+var TracksList = React.createClass({displayName: 'TracksList',
+
+    render: function() {
+        var tracks = _.map(this.props.tracks, function(track) {
+            return React.DOM.li(null, track);
+        });
+
+        return (
+            React.DOM.div(null, 
+                React.DOM.h2(null, "Tracks" + (this.props.album && " from " + this.props.album || "")),
+                React.DOM.ul(null, 
+                    tracks
+                )
+            )
+        );
+    }
+});
+
+module.exports = React.createClass({displayName: 'exports',
+
+    render: function() {
+        return (
+            Locations( {contextual:true}, 
+              Location( {path:"/", albums:this.props.albums, handler:AlbumsList} ),
+              Location( {path:"/:album", tracks:"Todo: Retrieve album's tracks".split(' '), handler:TracksList} )
+            )
+        );
+    }
+});
+},{"react":163,"react-router-component":12,"underscore":164}],2:[function(require,module,exports){
 /** @jsx React.DOM */
 /* global require, module, console */
 
 var _ = require('underscore');
 var React = require('react');
+var ReactRouter = require('react-router-component');
+var Locations = ReactRouter.Locations;
+var Location = ReactRouter.Location;
+var Link = ReactRouter.Link;
 
-module.exports = React.createClass({displayName: 'exports',
+var Albums = require('./albums');
 
+var ArtistsList = React.createClass({displayName: 'ArtistsList',
     render: function() {
         var artists = _.map(this.props.artists, function(artist) {
-            return React.DOM.li(null, artist);
+            return React.DOM.li(null, Link( {href:"/" + artist + "/"}, artist));
         });
 
         return (
@@ -46,7 +85,19 @@ module.exports = React.createClass({displayName: 'exports',
         );
     }
 });
-},{"react":163,"underscore":164}],3:[function(require,module,exports){
+
+module.exports = React.createClass({displayName: 'exports',
+
+    render: function() {
+        return (
+            Locations( {contextual:true}, 
+              Location( {path:"/", artists:this.props.artists, handler:ArtistsList} ),
+              Location( {path:"/:artist/*", albums:"Todo: Retrive artist's albums".split(' '), handler:Albums} )
+            )
+        );
+    }
+});
+},{"./albums":1,"react":163,"react-router-component":12,"underscore":164}],3:[function(require,module,exports){
 /** @jsx React.DOM */
 /* global require, module, console */
 
@@ -72,7 +123,7 @@ var Link = ReactRouter.Link;
 module.exports = React.createClass({displayName: 'exports',
     render: function() {
         return (
-            React.DOM.div(null,                
+            React.DOM.div(null, 
                Link( {href:"/artists/"}, "Artists"),
                Link( {href:"/albums/"}, "Albums")
             )
@@ -871,11 +922,12 @@ var RouterMixin = {
     var current = this.context.router;
     var environment = this.getEnvironment();
 
-    while (current) {
-      if (current.getEnvironment() === environment) {
+    //while (current) {
+      if (current && current.getEnvironment() === environment) {
         return current;
       }
-    }
+    return undefined;
+    //}
   },
 
   /**
@@ -889,7 +941,14 @@ var RouterMixin = {
    * Make href scoped for the current router.
    */
   makeHref: function(href) {
-    return join(this.state.prefix, href);
+    var path = join(this.state.prefix, href);    
+    var parent = this.getParentRouter();
+
+    if (parent) {
+      return parent.makeHref(path);
+    }
+    
+    return path;
   },
 
   /**
@@ -906,7 +965,14 @@ var RouterMixin = {
     }
     navigation = navigation || {};
     path = join(this.state.prefix, path);
-    this.getEnvironment().setPath(path, navigation, cb);
+
+    var parent = this.getParentRouter();
+
+    if (parent) {
+      return parent.navigate(path, navigation, cb);
+    }
+    
+    this.getEnvironment().setPath(path, navigation, cb);   
   },
 
   /**
