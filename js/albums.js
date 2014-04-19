@@ -5,17 +5,17 @@ var _ = require('underscore');
 var React = require('react');
 
 module.exports = React.createClass({displayName: 'exports',
-
+    
     render: function() {
-        var artists = _.map(this.props.artists, function(artist) {
-            return React.DOM.li(null, artist);
+        var albums = _.map(this.props.albums, function(album) {
+            return React.DOM.li(null, album);
         });
 
         return (
             React.DOM.div(null, 
-                React.DOM.h2(null, "Artists"),
+                React.DOM.h2(null, "Albums"),
                 React.DOM.ul(null, 
-                    artists
+                    albums
                 )
             )
         );

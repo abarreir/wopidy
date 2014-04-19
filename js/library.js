@@ -9,8 +9,9 @@ var Link = ReactRouter.Link;
 
 var LibraryProvider = require('./library-provider');
 
-var Artists = require('./artists');
 var LibraryHome = require('./library-home');
+var Artists = require('./artists');
+var Albums = require('./albums');
 
 module.exports = React.createClass({displayName: 'exports',
 
@@ -54,7 +55,7 @@ module.exports = React.createClass({displayName: 'exports',
                 Locations( {contextual:true}, 
                   Location( {path:"/", handler:LibraryHome} ),
                   Location( {path:"/artists/*", artists:this.state.artists, handler:Artists} ),
-                  Location( {path:"/albums/*", artists:this.state.albums, handler:Artists} )
+                  Location( {path:"/albums/*", albums:this.state.albums, handler:Albums} )
                 )
             )
         );
