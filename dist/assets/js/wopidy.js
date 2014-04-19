@@ -1,6 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /** @jsx React.DOM */
-/* global require, module, console */
 
 var _ = require('underscore');
 var React = require('react');
@@ -58,7 +57,6 @@ module.exports = React.createClass({displayName: 'exports',
 });
 },{"react":163,"react-router-component":12,"underscore":164}],2:[function(require,module,exports){
 /** @jsx React.DOM */
-/* global require, module, console */
 
 var _ = require('underscore');
 var React = require('react');
@@ -99,7 +97,6 @@ module.exports = React.createClass({displayName: 'exports',
 });
 },{"./albums":1,"react":163,"react-router-component":12,"underscore":164}],3:[function(require,module,exports){
 /** @jsx React.DOM */
-/* global require, module, console */
 
 var React = require('react');
 
@@ -114,7 +111,6 @@ module.exports = React.createClass({displayName: 'exports',
 });
 },{"react":163}],4:[function(require,module,exports){
 /** @jsx React.DOM */
-/* global require, module, console */
 
 var React = require('react');
 var ReactRouter = require('react-router-component');
@@ -131,8 +127,6 @@ module.exports = React.createClass({displayName: 'exports',
     }
 });
 },{"react":163,"react-router-component":12}],5:[function(require,module,exports){
-/* global require, module, console */
-
 var mopidy = require('./mopidy');
 var when = require('when');
 var _ = require('underscore');
@@ -264,13 +258,11 @@ module.exports = new LibraryProvider();
 
 },{"./mopidy":7,"underscore":164,"when":178}],6:[function(require,module,exports){
 /** @jsx React.DOM */
-/* global require, module, console */
 
 var React = require('react');
 var ReactRouter = require('react-router-component');
 var Locations = ReactRouter.Locations;
 var Location = ReactRouter.Location;
-var Link = ReactRouter.Link;
 
 var LibraryProvider = require('./library-provider');
 
@@ -327,17 +319,15 @@ module.exports = React.createClass({displayName: 'exports',
     }
 });
 },{"./albums":1,"./artists":2,"./library-home":4,"./library-provider":5,"react":163,"react-router-component":12}],7:[function(require,module,exports){
-/* global module, Mopidy */
+/* global Mopidy */
 module.exports = new Mopidy();
 },{}],8:[function(require,module,exports){
 /** @jsx React.DOM */
-/* global require, document */
 
 var React = require('react');
 var ReactRouter = require('react-router-component');
 var Locations = ReactRouter.Locations;
 var Location = ReactRouter.Location;
-var NotFound = ReactRouter.NotFound;
 var Link = ReactRouter.Link;
 
 var Library = require('./library');

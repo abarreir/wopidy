@@ -1,5 +1,4 @@
 /** @jsx React.DOM */
-/* global require, module, console */
 
 var React = require('react');
 var ReactRouter = require('react-router-component');

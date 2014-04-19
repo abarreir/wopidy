@@ -1,2 +1,2 @@
-/* global module, Mopidy */
+/* global Mopidy */
 module.exports = new Mopidy();

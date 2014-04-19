@@ -1,11 +1,9 @@
 /** @jsx React.DOM */
-/* global require, module, console */
 
 var React = require('react');
 var ReactRouter = require('react-router-component');
 var Locations = ReactRouter.Locations;
 var Location = ReactRouter.Location;
-var Link = ReactRouter.Link;
 
 var LibraryProvider = require('./library-provider');
 
