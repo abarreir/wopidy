@@ -17,7 +17,7 @@ var Wopidy = React.createClass({displayName: 'Wopidy',
               Link( {globalHash:true, href:"/library/"}, "Library"),
               React.DOM.div( {id:"content"}, 
                 Locations( {hash:true}, 
-                  Location( {path:"/library/*", handler:Library} ),
+                  Location( {path:"/library*", handler:Library} ),
                   Location( {path:"/", handler:Home} )
                 )
               )

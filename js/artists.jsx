@@ -32,7 +32,7 @@ module.exports = React.createClass({
         return (
             <Locations contextual>
               <Location path="/" artists={this.props.artists} handler={ArtistsList} />
-              <Location path="/:artist/*" albums={"Todo: Retrive artist's albums".split(' ')} handler={Albums} />
+              <Location path="/:artist/*" handler={Albums} />
             </Locations>
         );
     }

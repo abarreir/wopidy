@@ -70,16 +70,19 @@ var LibraryProvider = function () {
         });
     };
 
-    var _getAlbums = function(resolve, reject) {
-        mopidy.library.search(null).then(function(results) {
+    var _getAlbums = function(filter, resolve, reject) {
+        mopidy.library.search(filter).then(function(results) {
             var albums = [];
             _.each(results, function(result) {
                 // TODO: Album should be defined by (album, artist) tuple
                 if (result.hasOwnProperty("albums")) {
                     _.each(result.albums, function(album) {
                         if (!album.name) {
-                            console.warn("Empty album name!");
-                            console.log(album);
+                            // TODO: Such case can happen, fallback to Unknwon album
+                            // if artist is set
+
+                            // console.warn("Empty album name!");
+                            // console.log(album);
                         } else {
                             albums.push(album.name);
                         }
@@ -88,8 +91,11 @@ var LibraryProvider = function () {
                     _.each(result.tracks, function(track) {
                         if (track.hasOwnProperty("album")) {
                             if (!track.album.name) {
-                                console.warn("Empty album!");
-                                console.log(track);
+                                // TODO: Such case can happen, fallback to Unknwon album
+                                // if artist is set
+
+                                // console.warn("Empty album!");
+                                // console.log(track);
                             } else {
                                 albums.push(track.album.name);
                             }
@@ -110,17 +116,51 @@ var LibraryProvider = function () {
         }, reject);
     };
 
-    this.getAlbums = function() {
+    this.getAlbums = function(filter) {
         if (!_mopidyOnline) {
             return when.promise(function(resolve, reject) {
                 return mopidy.on("state:online", function() {
-                    return _getAlbums(resolve, reject);
+                    return _getAlbums(filter, resolve, reject);
                 });
             });            
         }
 
         return when.promise(function(resolve, reject) {
-            return _getAlbums(resolve, reject);
+            return _getAlbums(filter, resolve, reject);
+        });
+    };
+
+    var _getTracks = function(filter, resolve, reject) {
+        mopidy.library.search(filter).then(function(results) {
+            var tracks = [];
+            _.each(results, function(result) {
+                if (result.hasOwnProperty("tracks")) {
+                    _.each(result.tracks, function(track) {
+                        tracks.push(track.name);
+                    });
+                } else {
+                    console.warn("Unhandled search results.");
+                    console.log(result);
+                }
+            });
+
+            return resolve(_.chain(tracks).uniq().sortBy(function(name) {
+                return name;
+            }).value());
+        }, reject);
+    };
+
+    this.getTracks = function(filter) {
+        if (!_mopidyOnline) {
+            return when.promise(function(resolve, reject) {
+                return mopidy.on("state:online", function() {
+                    return _getTracks(filter, resolve, reject);
+                });
+            });            
+        }
+
+        return when.promise(function(resolve, reject) {
+            return _getTracks(filter, resolve, reject);
         });
     };
 };

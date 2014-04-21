@@ -52,8 +52,9 @@ module.exports = React.createClass({
                 
                 <Locations contextual>
                   <Location path="/" handler={LibraryHome} />
-                  <Location path="/artists/*" artists={this.state.artists} handler={Artists} />
-                  <Location path="/albums/*" albums={this.state.albums} handler={Albums} />
+                  <Location path="/artists*" artists={this.state.artists} handler={Artists} />
+                  <Location path="/albums*" albums={this.state.albums} handler={Albums} />
+                  <Location path="/test*" handler={Test} />
                 </Locations>
             </div>
         );

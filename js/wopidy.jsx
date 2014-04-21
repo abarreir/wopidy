@@ -17,7 +17,7 @@ var Wopidy = React.createClass({
               <Link globalHash href="/library/">Library</Link>
               <div id="content">
                 <Locations hash>
-                  <Location path="/library/*" handler={Library} />
+                  <Location path="/library*" handler={Library} />
                   <Location path="/" handler={Home} />
                 </Locations>
               </div>
