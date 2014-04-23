@@ -5,6 +5,7 @@ var React = require('react');
 var Async = require('react-async');
 
 var LibraryProvider = require('./library-provider');
+var PlaybackController = require('./playback-controller');
 
 module.exports = React.createClass({displayName: 'exports',
     mixins: [Async.Mixin],
@@ -20,15 +21,31 @@ module.exports = React.createClass({displayName: 'exports',
         })
         .done(function(result) {
             return cb(null, {
-                tracks: result || []
+                tracks: result.tracks || [],
+                uris: result.uris || {}
             });
         });
     },
 
+    _play: function(e) {
+        var uris = this.state.uris[e.target.dataset.track];
+
+        if (!uris.length) {
+            return console.error("No uri for the selected track");
+        }
+
+        PlaybackController.play(uris[0]);
+    },
+
     render: function() {
         var tracks = _.map(this.state.tracks, function(track) {
-            return React.DOM.li(null, track);
-        });
+            return (
+                React.DOM.li(null, 
+                    React.DOM.span(null, track),
+                    React.DOM.div( {'data-track':track, onClick:this._play}, "Play")
+                )
+            );
+        }.bind(this));
 
         return (
             React.DOM.div(null, 

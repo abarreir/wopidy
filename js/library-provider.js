@@ -133,10 +133,18 @@ var LibraryProvider = function () {
     var _getTracks = function(filter, resolve, reject) {
         mopidy.library.search(filter).then(function(results) {
             var tracks = [];
+            var uris = {};
+
             _.each(results, function(result) {
                 if (result.hasOwnProperty("tracks")) {
                     _.each(result.tracks, function(track) {
                         tracks.push(track.name);
+
+                        if (!uris.hasOwnProperty(track.name)) {
+                            uris[track.name] = [];
+                        }
+
+                        uris[track.name].push(track.uri);
                     });
                 } else {
                     console.warn("Unhandled search results.");
@@ -144,9 +152,10 @@ var LibraryProvider = function () {
                 }
             });
 
-            return resolve(_.chain(tracks).uniq().sortBy(function(name) {
-                return name;
-            }).value());
+            return resolve({
+                tracks: _.chain(tracks).uniq().sortBy(function(name) { return name; }).value(), 
+                uris: uris
+            });
         }, reject);
     };
 
