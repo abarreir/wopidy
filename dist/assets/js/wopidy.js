@@ -357,8 +357,7 @@ module.exports = React.createClass({displayName: 'exports',
                 Locations( {contextual:true}, 
                   Location( {path:"/", handler:LibraryHome} ),
                   Location( {path:"/artists*", artists:this.state.artists, handler:Artists} ),
-                  Location( {path:"/albums*", albums:this.state.albums, handler:Albums} ),
-                  Location( {path:"/test*", handler:Test} )
+                  Location( {path:"/albums*", albums:this.state.albums, handler:Albums} )
                 )
             )
         );
