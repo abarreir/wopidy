@@ -32,10 +32,10 @@ gulp.task('scripts', function() {
     return browserify('./js/wopidy.js')
     .bundle()
     .pipe(source('wopidy.js'))
-    .pipe(gulp.dest('dist/assets/js'))
+    .pipe(gulp.dest('build/assets/js'))
     .pipe(rename({suffix: '.min'}))
     .pipe(streamify(uglify()))
-    .pipe(gulp.dest('dist/assets/js'))
+    .pipe(gulp.dest('build/assets/js'))
     .pipe(notify({ message: 'Scripts task complete' }));
 });
 
