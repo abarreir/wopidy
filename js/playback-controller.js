@@ -8,8 +8,15 @@ var PlaybackController = function () {
         })
         .catch(function(reason) {
             console.error(reason);
-        })
-        
+        });        
+    };
+
+    this.addToTracklist = function(uri) {
+        return mopidy.tracklist.add(null, null, uri);
+    };
+
+    this.getTracklist = function() {
+        return mopidy.tracklist.getTracks();
     };
 };
 

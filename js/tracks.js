@@ -27,6 +27,24 @@ module.exports = React.createClass({displayName: 'exports',
         });
     },
 
+    _addToTracklist: function(e) {
+        var uris = this.state.uris[e.target.dataset.track];
+
+        if (!uris.length) {
+            return console.error("No uri for the selected track");
+        }
+
+        PlaybackController
+        .addToTracklist(uris[0])
+        .catch(function(reason) {
+            console.error("Error adding track to tracklist.");
+            console.error(reason);
+        })
+        .done(function() {
+
+        });
+    },
+
     _play: function(e) {
         var uris = this.state.uris[e.target.dataset.track];
 
@@ -42,7 +60,8 @@ module.exports = React.createClass({displayName: 'exports',
             return (
                 React.DOM.li(null, 
                     React.DOM.span(null, track),
-                    React.DOM.div( {'data-track':track, onClick:this._play}, "Play")
+                    React.DOM.div( {'data-track':track, onClick:this._play}, "Play"),
+                    React.DOM.div( {'data-track':track, onClick:this._addToTracklist}, "Queue")
                 )
             );
         }.bind(this));

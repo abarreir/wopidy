@@ -8,6 +8,7 @@ var Link = ReactRouter.Link;
 
 var Library = require('./library');
 var Home = require('./home');
+var Tracklist = require('./tracklist');
 
 var Wopidy = React.createClass({
     render: function() {
@@ -15,10 +16,13 @@ var Wopidy = React.createClass({
             <div id="main">
               <h1><Link globalHash href="/">wopidy</Link></h1>
               <Link globalHash href="/library/">Library</Link>
+              <span> | </span>
+              <Link globalHash href="/tracklist">Tracklist</Link>
               <div id="content">
                 <Locations hash>
-                  <Location path="/library*" handler={Library} />
                   <Location path="/" handler={Home} />
+                  <Location path="/library*" handler={Library} />
+                  <Location path="/tracklist" handler={Tracklist} />
                 </Locations>
               </div>
             </div>
