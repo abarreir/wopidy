@@ -3,18 +3,9 @@ var when = require('when');
 var _ = require('underscore');
 
 var LibraryProvider = function () {
-    var _mopidyOnline = false;
 
-    mopidy.on("state:online", function() {
-        _mopidyOnline = true;
-    });
-
-    mopidy.on("state:offline", function() {
-        _mopidyOnline = false;
-    });
-
-    var _getArtists = function(resolve, reject) {
-        mopidy.library.search(null).then(function(results) {
+    this.getArtists = function() {
+        return mopidy.library.search(null).then(function(results) {
             var artists = [];
             _.each(results, function(result) {
                 if (result.hasOwnProperty("albums")) {
@@ -50,28 +41,14 @@ var LibraryProvider = function () {
                 }
             });
 
-            return resolve(_.chain(artists).uniq().sortBy(function(name) {
+            return _.chain(artists).uniq().sortBy(function(name) {
                 return name;
-            }).value());
-        }, reject);
-    };
-
-    this.getArtists = function() {
-        if (!_mopidyOnline) {
-            return when.promise(function(resolve, reject) {
-                return mopidy.on("state:online", function() {
-                    return _getArtists(resolve, reject);
-                });
-            });            
-        }
-
-        return when.promise(function(resolve, reject) {
-            return _getArtists(resolve, reject);
+            }).value();
         });
     };
 
-    var _getAlbums = function(filter, resolve, reject) {
-        mopidy.library.search(filter).then(function(results) {
+    this.getAlbums = function(filter) {
+        return mopidy.library.search(filter).then(function(results) {
             var albums = [];
             _.each(results, function(result) {
                 // TODO: Album should be defined by (album, artist) tuple
@@ -110,28 +87,14 @@ var LibraryProvider = function () {
                 }
             });
 
-            return resolve(_.chain(albums).uniq().sortBy(function(name) {
+            return _.chain(albums).uniq().sortBy(function(name) {
                 return name;
-            }).value());
-        }, reject);
-    };
-
-    this.getAlbums = function(filter) {
-        if (!_mopidyOnline) {
-            return when.promise(function(resolve, reject) {
-                return mopidy.on("state:online", function() {
-                    return _getAlbums(filter, resolve, reject);
-                });
-            });            
-        }
-
-        return when.promise(function(resolve, reject) {
-            return _getAlbums(filter, resolve, reject);
+            }).value();
         });
     };
 
-    var _getTracks = function(filter, resolve, reject) {
-        mopidy.library.search(filter).then(function(results) {
+    this.getTracks = function(filter) {
+        return mopidy.library.search(filter).then(function(results) {
             var tracks = [];
             var uris = {};
 
@@ -152,24 +115,10 @@ var LibraryProvider = function () {
                 }
             });
 
-            return resolve({
+            return {
                 tracks: _.chain(tracks).uniq().sortBy(function(name) { return name; }).value(), 
                 uris: uris
-            });
-        }, reject);
-    };
-
-    this.getTracks = function(filter) {
-        if (!_mopidyOnline) {
-            return when.promise(function(resolve, reject) {
-                return mopidy.on("state:online", function() {
-                    return _getTracks(filter, resolve, reject);
-                });
-            });            
-        }
-
-        return when.promise(function(resolve, reject) {
-            return _getTracks(filter, resolve, reject);
+            };
         });
     };
 };
