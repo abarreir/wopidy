@@ -46,7 +46,7 @@ var MopidyProxy = function() {
 
     this.playback = {
         changeTrack: _proxyFunc("mopidy.playback.changeTrack"),
-        getCurrentTLTrack: _proxyFunc("mopidy.playback.getCurrentTLTrack"),
+        getCurrentTlTrack: _proxyFunc("mopidy.playback.getCurrentTlTrack"),
         getCurrentTrack: _proxyFunc("mopidy.playback.getCurrentTrack"),
         getMute: _proxyFunc("mopidy.playback.getMute"),
         getState: _proxyFunc("mopidy.playback.getState"),
