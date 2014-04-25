@@ -52,7 +52,7 @@ module.exports = React.createClass({displayName: 'exports',
             return console.error("No uri for the selected track");
         }
 
-        PlaybackController.play(uris[0]);
+        PlaybackController.playNow(uris[0]);
     },
 
     render: function() {
