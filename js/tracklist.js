@@ -23,11 +23,18 @@ module.exports = React.createClass({displayName: 'exports',
         });
     },
 
+    _play: function(e) {
+        var tlTrack = this.state.tracklist[e.target.dataset.trackIdx];
+
+        PlaybackController.changeTrack(tlTrack);
+    },
+
     render: function() {
-        var tracklist = _.map(this.state.tracklist, function(track) {
+        var tracklist = _.map(this.state.tracklist, function(tlTrack) {
             return (
                 React.DOM.li(null, 
-                    React.DOM.span(null, track.name)
+                    React.DOM.span(null, tlTrack.track.name),
+                    React.DOM.div( {'data-track-idx':this.state.tracklist.indexOf(tlTrack), onClick:this._play}, "Play")
                 )
             );
         }.bind(this));

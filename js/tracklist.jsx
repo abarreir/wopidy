@@ -23,11 +23,18 @@ module.exports = React.createClass({
         });
     },
 
+    _play: function(e) {
+        var tlTrack = this.state.tracklist[e.target.dataset.trackIdx];
+
+        PlaybackController.changeTrack(tlTrack);
+    },
+
     render: function() {
-        var tracklist = _.map(this.state.tracklist, function(track) {
+        var tracklist = _.map(this.state.tracklist, function(tlTrack) {
             return (
                 <li>
-                    <span>{track.name}</span>
+                    <span>{tlTrack.track.name}</span>
+                    <div data-track-idx={this.state.tracklist.indexOf(tlTrack)} onClick={this._play}>Play</div>
                 </li>
             );
         }.bind(this));

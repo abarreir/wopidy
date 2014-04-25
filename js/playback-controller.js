@@ -67,7 +67,7 @@ var PlaybackController = function () {
     };
 
     this.getTracklist = function() {
-        return mopidy.tracklist.getTracks();
+        return mopidy.tracklist.getTlTracks();
     };
 
     this.playNow = function(uri) {
@@ -78,6 +78,14 @@ var PlaybackController = function () {
         }.bind(this)).then(function(result) {
             return this.next();
         }.bind(this)).then(function(result) {
+            if (_playstate !== "playing") {
+                return this.play();
+            }
+        }.bind(this));
+    };
+
+    this.changeTrack = function(tlTrack) {
+        return mopidy.playback.changeTrack(tlTrack).then(function(result) {
             if (_playstate !== "playing") {
                 return this.play();
             }
