@@ -7,8 +7,16 @@ var PlaybackController = function () {
     // --
     var _playstate = "stopped";
 
-    this.play = function(uri) {
+    this.play = function() {
         return mopidy.playback.play();
+    };
+
+    this.pause = function() {
+        return mopidy.playback.pause();
+    };
+
+    this.stop = function() {
+        return mopidy.playback.stop();
     };
 
     this.next = function() {
