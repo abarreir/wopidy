@@ -1,5 +1,4 @@
 var mopidy = require('./mopidy');
-var when = require('when');
 var _ = require('underscore');
 
 var LibraryProvider = function () {
