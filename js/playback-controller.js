@@ -3,9 +3,24 @@ var when = require('when');
 
 var PlaybackController = function () {
     // -
+    // Forward events listening to mopidy
+    this.on = mopidy.on.bind(mopidy);
+    this.off = mopidy.off.bind(mopidy);
+
+    // -
     // Playback
     // --
-    var _playstate = "stopped";
+    var _playstate = null;
+    mopidy.playback.getState()
+    .done(function(state) {
+        _playstate = state;
+    });
+
+    var _position = null;
+    mopidy.playback.getTimePosition()
+    .done(function(pos) {
+        _position = pos;
+    });
 
     this.play = function() {
         return mopidy.playback.play();
@@ -21,6 +36,18 @@ var PlaybackController = function () {
 
     this.next = function() {
         return mopidy.playback.next();
+    };
+
+    this.previous = function() {
+        return mopidy.playback.previous();
+    };
+
+    this.getPlaybackState = function() {
+        return when(_playstate && _playstate || mopidy.playback.getState());
+    };
+
+    this.getPlaybackPosition = function() {
+        return when(_position !== null ? _position : mopidy.playback.getTimePosition());
     };
 
     mopidy.on("event:trackPlaybackPaused", function(data) {
@@ -78,26 +105,28 @@ var PlaybackController = function () {
         return mopidy.tracklist.getTlTracks();
     };
 
+    this.getCurrentTrack = function() {
+        return when(_tlTrack && _tlTrack || mopidy.playback.getCurrentTlTrack());
+    };
+
     this.playNow = function(uri) {
         // If there's a current track in the list, add the new track after it
         // Otherwise add it to the queue
-        return when(_tlTrack && mopidy.tracklist.index(_tlTrack) || null).then(function(result) {
+        return when(_playstate !== "stopped" && this.stop())
+        .then(function() {
+            return when(_tlTrack && mopidy.tracklist.index(_tlTrack) || null);
+        })
+        .then(function(result) {
             return this.addToTracklist(uri, result !== null && result + 1 || null);
-        }.bind(this)).then(function(result) {
-            return this.next();
-        }.bind(this)).then(function(result) {
-            if (_playstate !== "playing") {
-                return this.play();
-            }
-        }.bind(this));
+        }.bind(this))
+        .then(this.next.bind(this))
+        .then(this.play.bind(this));
     };
 
     this.changeTrack = function(tlTrack) {
-        return mopidy.playback.changeTrack(tlTrack).then(function(result) {
-            if (_playstate !== "playing") {
-                return this.play();
-            }
-        }.bind(this));
+        return when(_playstate !== "stopped" && this.stop())
+        .then(mopidy.playback.changeTrack(tlTrack))
+        .then(this.play.bind(this));
     };
 
     mopidy.on("event:trackPlaybackStarted", function(data) {
