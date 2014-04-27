@@ -18,6 +18,10 @@ module.exports = React.createClass({displayName: 'exports',
         .catch(function(reason) {
             console.error("Error retrieving tracks.");
             console.error(reason);
+            return {
+                tracks: [],
+                uris: {}
+            };
         })
         .done(function(result) {
             return cb(null, {
