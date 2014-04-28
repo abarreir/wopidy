@@ -51,36 +51,47 @@ var PlaybackController = function () {
     };
 
     mopidy.on("event:trackPlaybackPaused", function(data) {
-        console.log("Playback paused");
-        console.log(data);
         _playstate = "paused";
     });
 
     mopidy.on("event:trackPlaybackResumed", function(data) {
-        console.log("Playback resumed");
-        console.log(data);
         _playstate = "playing";
     });
 
-    mopidy.on("event:trackPlaybackEnded", function(data) {
-        console.log("Playback ended");
-        console.log(data);
-    });
+    // mopidy.on("event:trackPlaybackEnded", function(data) {
+    //     console.log("Playback ended");
+    //     console.log(data);
+    // });
 
     mopidy.on("event:playbackStateChanged", function(data) {
-        console.log("Playback state changed");
         _playstate = data.new_state;
     });
 
-    mopidy.on("event:volumeChanged", function(data) {
-        console.log("Volume changed");
-        console.log(data);
-    });
+    this.getVolume = function() {
+        return mopidy.playback.getVolume();
+    };
 
-    mopidy.on("event:muteChanged", function(data) {
-        console.log("Mute changed");
-        console.log(data);
-    });
+    this.setVolume = function(volume) {
+        return mopidy.playback.setVolume(volume);
+    };
+
+    this.getMute = function() {
+        return mopidy.playback.getMute();
+    };
+
+    this.setMute = function(mute) {
+        return mopidy.playback.setMute(mute);
+    };
+
+    // mopidy.on("event:volumeChanged", function(data) {
+    //     console.log("Volume changed");
+    //     console.log(data);
+    // });
+
+    // mopidy.on("event:muteChanged", function(data) {
+    //     console.log("Mute changed");
+    //     console.log(data);
+    // });
 
     mopidy.on("event:seeked", function(data) {
         console.log("Seeked");
