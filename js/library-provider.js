@@ -1,94 +1,103 @@
 var mopidy = require('./mopidy');
 var _ = require('underscore');
+var when = require('when');
 
 var LibraryProvider = function () {
 
     this.getArtists = function() {
         return mopidy.library.search(null).then(function(results) {
-            var artists = [];
+            var artists = {};
             _.each(results, function(result) {
-                if (result.hasOwnProperty("albums")) {
-                    _.each(result.albums, function(album) {
-                        if (album.hasOwnProperty("artists") && album.artists instanceof Array && album.artists.length) {
-                            if (!album.artists[0].name) {
-                                console.warn("Empty artist!");
-                                console.log(album);
-                            } else {
-                                artists.push(album.artists[0].name);
-                            }
+                _.each(result.albums || result.tracks || [], function(item) {
+                    if (item.hasOwnProperty("artists") && item.artists instanceof Array && item.artists.length) {
+                        if (!item.artists[0].name) {
+                            console.warn("Empty artist!");
+                            console.log(item);
                         } else {
-                            console.log(album);
-                        }
-                    });
-                } else if (result.hasOwnProperty("tracks")) {
-                    _.each(result.tracks, function(track) {
-                        if (track.hasOwnProperty("artists") && track.artists instanceof Array && track.artists.length) {
-                            if (!track.artists[0].name) {
-                                console.warn("Empty artist!");
-                                console.log(track);
-                            } else {
-                                artists.push(track.artists[0].name);
+                            var artistKey = item.artists[0].name.trim().toLowerCase();
+                            if (artists.hasOwnProperty(artistKey) && artists[artistKey].indexOf(item.artists[0].name) === -1) {
+                                artists[artistKey].push(item.artists[0].name);
+                            } else if (!artists.hasOwnProperty(artistKey)) {
+                                artists[artistKey] = [item.artists[0].name];
                             }
-                        } else {
-                            console.warn("Track witout arists!");
-                            console.log(track);
                         }
-                    });
-                } else {
-                    console.warn("Unhandled search results.");
-                    console.log(result);
-                }
+                    } else {
+                        console.warn("No artist key for item!");
+                        console.log(item);
+                    }
+                });
+            });
+            
+            var res = [];
+
+            _.each(Object.keys(artists), function(artistKey) {
+                res.push(artists[artistKey][0]);
             });
 
-            return _.chain(artists).uniq().sortBy(function(name) {
+            return _.sortBy(res, function(name) {
                 return name;
-            }).value();
+            });
         });
     };
 
     this.getAlbums = function(filter) {
         return mopidy.library.search(filter).then(function(results) {
+            //var albums = [];
+            var albumKeys = [];
             var albums = [];
+            console.log(results);
+
             _.each(results, function(result) {
-                // TODO: Album should be defined by (album, artist) tuple
-                if (result.hasOwnProperty("albums")) {
-                    _.each(result.albums, function(album) {
-                        if (!album.name) {
-                            // TODO: Such case can happen, fallback to Unknwon album
-                            // if artist is set
+                _.each(result.albums || result.tracks || [], function(item) {
+                    var artistName = "";
 
-                            // console.warn("Empty album name!");
-                            // console.log(album);
-                        } else {
-                            albums.push(album.name);
-                        }
-                    });
-                } else if (result.hasOwnProperty("tracks")) {
-                    _.each(result.tracks, function(track) {
-                        if (track.hasOwnProperty("album")) {
-                            if (!track.album.name) {
-                                // TODO: Such case can happen, fallback to Unknwon album
-                                // if artist is set
+                    if (filter && filter.artist) {
+                        artistName = filter.artist;
 
-                                // console.warn("Empty album!");
-                                // console.log(track);
-                            } else {
-                                albums.push(track.album.name);
+                        if (item.artists && item.artists instanceof Array && item.artists.length) {
+                            var match = false;
+
+                            _.each(item.artists, function(artist) {
+                                match = match || artist.name && artist.name.trim().toLowerCase() === filter.artist.trim().toLowerCase();
+                            });
+
+                            if (!match) {
+                                return;
                             }
-                        } else {
-                            console.warn("Track witout album!");
-                            console.log(track);
                         }
-                    });
-                } else {
-                    console.warn("Unhandled search results.");
-                    console.log(result);
-                }
+                    }
+
+                    var albumName = "";
+
+                    if (item.__model__ === "Track") {
+                        albumName = item.album && item.album.name.trim() && item.album.name || "Unknown album";
+                    } else {
+                        albumName = item.name.trim() && item.name || "Unknown album"; 
+                    }
+                    
+                    if (!artistName) {
+                        if (item.hasOwnProperty("artists") && item.artists instanceof Array && item.artists.length) {
+                            artistName = item.artists[0] && item.artists[0].name.trim() && item.artists[0].name || "Unknown artist";
+                        } else {
+                            artistName = "Unknown artist";
+                        }
+                    }
+
+                    var albumKey = albumName.trim().toLowerCase() + artistName.trim().toLowerCase();
+
+                    if (albumKeys.indexOf(albumKey) === -1) {
+                        albumKeys.push(albumKey);
+                        albums.push({
+                            artist: artistName,
+                            album: albumName
+                        });
+                    }
+                });
             });
 
-            return _.chain(albums).uniq().sortBy(function(name) {
-                return name;
-            }).value();
+            return _.sortBy(albums, function(albumTuple) {
+                return albumTuple.album;
+            });
         });
     };
 
@@ -108,9 +117,6 @@ var LibraryProvider = function () {
 
                         uris[track.name].push(track.uri);
                     });
-                } else {
-                    console.warn("Unhandled search results.");
-                    console.log(result);
                 }
             });
 

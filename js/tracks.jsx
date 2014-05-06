@@ -11,7 +11,23 @@ module.exports = React.createClass({
     mixins: [Async.Mixin],
 
     getInitialStateAsync: function(cb) {
-        var filter = this.props.album && {album: this.props.album} || null;
+        var filter = null;
+
+        if (this.props.album) {
+            filter = {
+                album: this.props.album
+            };
+        }
+
+        if (this.props.artist) {
+            if (filter) {
+                filter.artist = this.props.artist;
+            } else {
+                filter = {
+                    artist: this.props.artist
+                }
+            }
+        }
 
         LibraryProvider
         .getTracks(filter)

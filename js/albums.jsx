@@ -15,7 +15,7 @@ var AlbumsList = React.createClass({
 
     render: function() {
         var albums = _.map(this.props.albums, function(album) {
-            return <li><Link href={"/" + album}>{album}</Link></li>;
+            return <li><Link href={"/" + album.album}>{album.album + " - " + album.artist}</Link></li>;
         });
 
         return (

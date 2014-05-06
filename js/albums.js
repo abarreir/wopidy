@@ -15,7 +15,7 @@ var AlbumsList = React.createClass({displayName: 'AlbumsList',
 
     render: function() {
         var albums = _.map(this.props.albums, function(album) {
-            return React.DOM.li(null, Link( {href:"/" + album}, album));
+            return React.DOM.li(null, Link( {href:"/" + album.album}, album.album + " - " + album.artist));
         });
 
         return (
