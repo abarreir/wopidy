@@ -1,5 +1,5 @@
 var mopidy = require('./mopidy');
-var when = require('when');
+var _ = require('underscore');
 
 var PlaylistsController = function () {
     // -
@@ -8,7 +8,23 @@ var PlaylistsController = function () {
     this.off = mopidy.off.bind(mopidy);
 
     this.get = mopidy.playlists.getPlaylists.bind(mopidy);
-    this.lookup = mopidy.playlists.lookup.bind(mopidy);
+    this.lookup = function(playlistUri) {
+        return mopidy.playlists.lookup(playlistUri).then(function(playlist) {
+            var res = {
+                tracks: [],
+                uris: {}
+            };
+
+            if (playlist.hasOwnProperty("tracks") && playlist.tracks instanceof Array) {
+                _.each(playlist.tracks, function(track) {
+                    res.tracks.push(track.name);
+                    res.uris[track.name] = track.uri;
+                });
+            }
+
+            return res;
+        });
+    };
 };
 
 module.exports = new PlaylistsController();

@@ -5,32 +5,40 @@ var React = require('react');
 var Async = require('react-async');
 
 var LibraryProvider = require('./library-provider');
+var PlaylistsController = require('./playlists-controller');
 var PlaybackController = require('./playback-controller');
 
 module.exports = React.createClass({displayName: 'exports',
     mixins: [Async.Mixin],
 
     getInitialStateAsync: function(cb) {
-        var filter = null;
+        var tracksProvider = null;
 
-        if (this.props.album) {
-            filter = {
-                album: this.props.album
-            };
-        }
+        if (this.props.playlistid) {
+            tracksProvider = PlaylistsController.lookup(this.props.playlistid);
+        } else {
+            var filter = null;
 
-        if (this.props.artist) {
-            if (filter) {
-                filter.artist = this.props.artist;
-            } else {
+            if (this.props.album) {
                 filter = {
-                    artist: this.props.artist
+                    album: this.props.album
+                };
+            }
+
+            if (this.props.artist) {
+                if (filter) {
+                    filter.artist = this.props.artist;
+                } else {
+                    filter = {
+                        artist: this.props.artist
+                    }
                 }
             }
-        }
 
-        LibraryProvider
-        .getTracks(filter)
+            tracksProvider = LibraryProvider.getTracks(filter);
+        }
+        
+        tracksProvider
         .catch(function(reason) {
             console.error("Error retrieving tracks.");
             console.error(reason);

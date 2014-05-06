@@ -5,8 +5,9 @@ var React = require('react');
 var Async = require('react-async');
 
 var PlaylistsController = require('./playlists-controller');
+var TracksList = require('./tracks');
 
-module.exports = React.createClass({
+var PlaylistsList = React.createClass({
     mixins: [Async.Mixin],
 
     getInitialStateAsync: function(cb) {
@@ -27,7 +28,7 @@ module.exports = React.createClass({
         var playlists = _.map(this.state.playlists, function(playlist) {
             return (
                 <li>
-                    <span>{playlist.name}</span>
+                    <Link href={"/" + playlist.uri}>{playlist.name}</Link>
                 </li>
             );
         }.bind(this));
@@ -39,6 +40,24 @@ module.exports = React.createClass({
                     {playlists}
                 </ul>
             </div>
+        );
+    }
+});
+
+var ReactRouter = require('react-router-component');
+var Locations = ReactRouter.Locations;
+var Location = ReactRouter.Location;
+var Link = ReactRouter.Link;
+
+module.exports = React.createClass({
+
+    render: function() {
+
+        return (
+            <Locations contextual>
+              <Location path="/" handler={PlaylistsList} />
+              <Location path="/:playlistid" handler={TracksList} />
+            </Locations>
         );
     }
 });
