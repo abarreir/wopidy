@@ -102,20 +102,41 @@ var LibraryProvider = function () {
     };
 
     this.getTracks = function(filter) {
+        console.log(filter);
         return mopidy.library.search(filter).then(function(results) {
             var tracks = [];
             var uris = {};
 
             _.each(results, function(result) {
                 if (result.hasOwnProperty("tracks")) {
-                    _.each(result.tracks, function(track) {
-                        tracks.push(track.name);
+                    _.each(result.tracks, function(item) {
+                        if (filter && filter.artist) {
+                            if (item.artists && item.artists instanceof Array && item.artists.length) {
+                                var match = false;
 
-                        if (!uris.hasOwnProperty(track.name)) {
-                            uris[track.name] = [];
+                                _.each(item.artists, function(artist) {
+                                    match = match || artist.name && artist.name.trim().toLowerCase() === filter.artist.trim().toLowerCase();
+                                });
+
+                                if (!match) {
+                                    return;
+                                }
+                            }
                         }
 
-                        uris[track.name].push(track.uri);
+                        if (filter && filter.album) {
+                            if (item.album && !item.album.name.trim().toLowerCase() === filter.album.trim().toLowerCase()) {
+                               return;
+                            }
+                        }
+
+                        tracks.push(item.name);
+
+                        if (!uris.hasOwnProperty(item.name)) {
+                            uris[item.name] = [];
+                        }
+
+                        uris[item.name].push(item.uri);
                     });
                 }
             });
