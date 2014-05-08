@@ -45,7 +45,6 @@ var LibraryProvider = function () {
             //var albums = [];
             var albumKeys = [];
             var albums = [];
-            console.log(results);
 
             _.each(results, function(result) {
                 _.each(result.albums || result.tracks || [], function(item) {
@@ -102,7 +101,6 @@ var LibraryProvider = function () {
     };
 
     this.getTracks = function(filter) {
-        console.log(filter);
         return mopidy.library.search(filter).then(function(results) {
             var tracks = [];
             var uris = {};

@@ -2,10 +2,14 @@
 
 var _ = require('underscore');
 var React = require('react');
+var Async = require('react-async');
+
 var ReactRouter = require('react-router-component');
 var Locations = ReactRouter.Locations;
 var Location = ReactRouter.Location;
 var Link = ReactRouter.Link;
+
+var LibraryProvider = require('./library-provider');
 
 var Albums = require('./albums');
 
@@ -27,11 +31,27 @@ var ArtistsList = React.createClass({
 });
 
 module.exports = React.createClass({
+    mixins: [Async.Mixin],
+
+    getInitialStateAsync: function(cb) {
+        LibraryProvider.getArtists()
+        .then(function(result) {
+            return cb(null, {
+                artists: result
+            });
+        })
+        .otherwise(function(reason) {
+            console.error(reason);
+            return cb(null, {
+                artists: []
+            });
+        });
+    },
 
     render: function() {
         return (
             <Locations contextual>
-              <Location path="/" artists={this.props.artists} handler={ArtistsList} />
+              <Location path="/" artists={this.state.artists} handler={ArtistsList} />
               <Location path="/:artist/*" handler={Albums} />
             </Locations>
         );
