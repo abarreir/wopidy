@@ -11,8 +11,9 @@ var LibraryProvider = function () {
                 _.each(result.albums || result.tracks || [], function(item) {
                     if (item.hasOwnProperty("artists") && item.artists instanceof Array && item.artists.length) {
                         if (!item.artists[0].name) {
-                            console.warn("Empty artist!");
-                            console.log(item);
+                            // TODO: Support 'Unknown artist'
+                            // console.warn("Empty artist!");
+                            // console.log(item);
                         } else {
                             var artistKey = item.artists[0].name.trim().toLowerCase();
                             if (artists.hasOwnProperty(artistKey) && artists[artistKey].indexOf(item.artists[0].name) === -1) {
@@ -101,6 +102,9 @@ var LibraryProvider = function () {
     };
 
     this.getTracks = function(filter) {
+        // TODO support 'Unknown artist' & 'Unknown album'
+        // Might need backend adaptations though
+        //
         return mopidy.library.search(filter).then(function(results) {
             var tracks = [];
             var uris = {};
