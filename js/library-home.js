@@ -8,7 +8,7 @@ module.exports = React.createClass({displayName: 'exports',
     render: function() {
         return (
             React.DOM.div(null, 
-               Link( {href:"/artists/"}, "Artists"),
+               Link( {href:"/artists"}, "Artists"),
                Link( {href:"/albums/"}, "Albums")
             )
         );

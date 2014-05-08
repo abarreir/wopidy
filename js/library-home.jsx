@@ -8,7 +8,7 @@ module.exports = React.createClass({
     render: function() {
         return (
             <div>
-               <Link href="/artists/">Artists</Link>
+               <Link href="/artists">Artists</Link>
                <Link href="/albums/">Albums</Link>
             </div>
         );
